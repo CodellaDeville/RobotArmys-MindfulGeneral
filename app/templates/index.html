@@ -1,10 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Robot Army Chatbot</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style type = "text/css">
+        
+        .box1{
+            width: 100px;
+            height: 100px;
+            float: left;
+            background:black;
+            display: none;
+
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -46,6 +58,9 @@
         <!-- Support Tools Section -->
         <div class="support-tools">
             <h3>Support Tools</h3>
+            
+            <button id="breathing">Breathing Exercise</button>
+            <div id="breathing"; style = "display:none"; href = "https://www.healthline.com/health/breathing-exercise"; top: 700px; left 400px;></div>
             <button>Breathing Exercise</button>
             <button>Mindfulness</button>
             <button>Coping Strategies</button>
