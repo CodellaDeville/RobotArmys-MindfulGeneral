@@ -1,6 +1,6 @@
 # 🎖️ Mindful General - Support for Service Members & First Responders
 
-A dedicated AI companion providing emotional support and understanding for veterans, active military personnel, and first responders. Created by a disabled veteran advocate who understands the unique challenges faced by those who serve.
+A dedicated AI companion providing emotional support and understanding for veterans, active military personnel, and first responders. Created by DeVry University student and faculty advocates who understand the unique challenges faced by those who serve.
 
 ## 🌟 Mission
 
