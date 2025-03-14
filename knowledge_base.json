@@ -91,6 +91,15 @@
     {
       "question": "How do I find balance in life?",
       "answer": "Balance is personal and dynamic - it's different for everyone and can change over time. It involves aligning your time and energy with your values and priorities, while also being flexible and compassionate with yourself. What areas of your life feel out of balance right now?"
+    },
+    {
+      "question": "Hello",
+      "answer": "Hello there!"
+    },
+    {
+      "question": "How are you!",
+      "answer": "I don't know how to feel!"
+
     }
   ]
 }
