@@ -1,112 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Robot Army Chatbot</title>
+    <meta name="description" content="Mindful General - Support companion for veterans, military personnel, and first responders">
+    <title>Mindful General - Support & Resources</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style type = "text/css">
-        
-        .box1{
-            width: 100px;
-            height: 100px;
-            float: left;
-            background:black;
+    <style type="text/css">
+        .breathing-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: background-color 1s ease;
+            animation: breatheBackground 12s infinite;
+        }
 
+        @keyframes breatheBackground {
+            0%, 100% { background-color: #0000FF; }  /* Blue - Inhale */
+            33% { background-color: #FF0000; }       /* Red - Hold */
+            66% { background-color: #00FF00; }       /* Green - Exhale */
+        }
+        
+        .breathing-text {
+            font-size: 48px;
+            color: white;
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .breathing-text.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+    
+        .breathing-title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    
+        .close-breathing {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+    
+        .support-tools button {
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #555;
+            color: white;
+            border: 2px solid #00FFFF;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 0 5px #00FFFF, 0 0 10px #00FFFF;
+            transition: all 0.3s ease;
+        }
+    
+        .support-tools button:hover {
+            box-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF;
         }
     </style>
 </head>
 <body>
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Main Container -->
     <div class="container">
-        <!-- Sidebar -->
-        <div class="sidebar">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" role="navigation" aria-label="Main navigation">
             <div class="logo">
-                <img src="{{ url_for('static', filename='images/RobotArmy_LoGo.png') }}" alt="Robot Army Logo" class="logo-img">
-                <p>Robot Army’s Mindful General</p>
+                <img src="{{ url_for('static', filename='images/RobotArmy_LoGo.png') }}" 
+                     alt="Mindful General Logo" 
+                     class="logo-img">
+                <p>Mindful General</p>
             </div>
             <ul class="nav">
-                <li><button class="active">Chat</button></li>
-                <li><button>Progress</button></li>
-                <li><button>Journal</button></li>
-                <li><button>Settings</button></li>
+                <li><button class="active" data-section="chat" aria-current="page">Support Chat</button></li>
+                <li><button data-section="progress" aria-label="Track Progress">Progress Tracking</button></li>
+                <li><button id="journalButton" data-section="journal" aria-label="Open Journal">Personal Journal</button></li>
+                <li><button data-section="settings" aria-label="Access Settings">Settings</button></li>
             </ul>
-            <button class="emergency-btn">Emergency Support</button>
-        </div>
+            <button class="emergency-btn" 
+                    onclick="handleEmergencySupport()" 
+                    aria-label="Access Emergency Support">
+                EMERGENCY SUPPORT
+            </button>
+        </nav>
 
         <!-- Main Chat Section -->
-        <div class="main-content">
-            <div class="chat-header">
-                <h2>Hello, I’m the Mindful General, your emotional support companion.</h2>
-            </div>
-            <div class="chat-box" id="chat-box"></div>
-            <div class="feeling-options">
-                <p>HOW ARE YOU FEELING?</p>
-                <button>😃 Great</button>
-                <button>😊 Good</button>
-                <button>😐 Okay</button>
-                <button>😞 Bad</button>
-                <button>😭 Terrible</button>
-            </div>
+        <main id="main-content" class="main-content" role="main">
+            <header class="chat-header">
+                <h1>Welcome to Your Support Session</h1>
+                <p>This is a safe space to share your thoughts and experiences.</p>
+            </header>
+
+            <div class="chat-box" 
+                 id="chat-box" 
+                 role="log" 
+                 aria-live="polite" 
+                 aria-label="Chat conversation"></div>
+
             <div class="input-container">
-                <input type="text" id="user-input" placeholder="Type your message..." />
-                <button onclick="sendMessage()">Send</button>
+                <label for="user-input" class="sr-only">Type your message</label>
+                <input type="text" 
+                       id="user-input" 
+                       placeholder="Share your thoughts..." 
+                       aria-label="Message input"
+                       onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()" aria-label="Send message">Send</button>
             </div>
-        </div>
+        </main>
 
         <!-- Support Tools Section -->
-        <div class="support-tools">
-            <h3>Support Tools</h3>
+        <aside class="support-tools" role="complementary" aria-label="Support resources">
+            <h2>Support Resources</h2>
             
-            <button id="breathing">Breathing Exercise</button>
-            <div id="breathing"; style = "display:none"; href = "https://www.healthline.com/health/breathing-exercise"; top: 700px; left 400px;></div>
-            <button>Breathing Exercise</button>
-            <button>Mindfulness</button>
-            <button>Coping Strategies</button>
-            <button>Crisis Resources</button>
-            <button>Daily Goals</button>
-        </div>
+            <section aria-label="Immediate assistance">
+                <h3>Quick Access</h3>
+                <button onclick="toggleBreathing()" 
+                        aria-label="Start breathing exercise">
+                    Breathing Exercise
+                </button>
+                <button onclick="window.open('https://www.va.gov/health-care/health-needs-conditions/mental-health/', '_blank')"
+                        aria-label="Access VA mental health resources">
+                    VA Mental Health
+                </button>
+                <button onclick="window.open('https://www.veteranscrisisline.net/find-resources/local-resources/', '_blank')"
+                        aria-label="Find local veteran resources">
+                    Local Resources
+                </button>
+            </section>
+
+            <section aria-label="Additional support">
+                <h3>Support Network</h3>
+                <button onclick="window.open('https://www.militaryonesource.mil/', '_blank')"
+                        aria-label="Access Military OneSource">
+                    Military OneSource
+                </button>
+                <button onclick="window.open('https://www.samhsa.gov/find-help/disaster-distress-helpline', '_blank')"
+                        aria-label="Access First Responder support">
+                    First Responder Support
+                </button>
+                <button onclick="window.open('https://www.pdhealth.mil/', '_blank')"
+                        aria-label="Access deployment health resources">
+                    Deployment Health
+                </button>
+                <button onclick="window.open('https://yourconsciouscoach.com/', '_blank')"
+                        aria-label="Access Conscious Coaching Support">
+                    Conscious Coaching Support
+                </button>
+                <button onclick="window.open('https://mindsnapsocial.com/', '_blank')"
+                        aria-label="Access MindSnap Social Support">
+                    MindSnap Social Support
+                </button>
+            </section>
+        </aside>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="emergency-contacts">
-            <h4>Emergency Contacts</h4>
-            <p>National Crisis Line: 988</p>
-            <p>Emergency: 911</p>
-        </div>
-        <div class="quick-links">
-            <h4>Quick Links</h4>
-            <p>About Us</p>
-            <p>Privacy Policy</p>
-            <p>Terms of Service</p>
-        </div>
-        <div class="social-media">
-            <h4>Connect</h4>
-            <p>Twitter | Facebook | Instagram</p>
-        </div>
-    </footer>
-
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='journal.js') }}"></script>
+    <script src="{{ url_for('static', filename='init.js') }}"></script>
     <script>
-        // Chat sending logic
-        function sendMessage() {
-            let userInput = document.getElementById("user-input").value;
-            if (!userInput.trim()) return;
-            document.getElementById("chat-box").innerHTML += `<p class="user"><strong>You:</strong> ${userInput}</p>`;
+        // Chat functionality
+        let currentMood = null;
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Breathing exercise functionality
+        function toggleBreathing() {
+            const container = document.querySelector('.breathing-container');
+            
+            if (!container) {
+                // Create breathing container if it doesn't exist
+                const breathingContainer = document.createElement('div');
+                breathingContainer.className = 'breathing-container';
+                breathingContainer.innerHTML = `
+                    <button class="close-breathing" onclick="toggleBreathing()">&times;</button>
+                    <div class="breathing-title">Guided Breathing Exercise</div>
+                    <div class="breathing-text">Breathe In...</div>
+                `;
+                document.body.appendChild(breathingContainer);
+                
+                // Start breathing exercise
+                startBreathing(breathingContainer);
+            } else {
+                // Stop breathing exercise
+                container.style.display = 'none';
+                clearTimeout(window.breathingTimeout);
+            }
+        }
+
+        function startBreathing(container) {
+            container.style.display = 'flex';
+            const text = container.querySelector('.breathing-text');
+            let phase = 'in';
+            
+            function breathingCycle() {
+                text.classList.add('visible');
+                
+                if (phase === 'in') {
+                    text.textContent = 'Breathe In...';
+                    phase = 'hold';
+                    window.breathingTimeout = setTimeout(() => {
+                        text.textContent = 'Hold...';
+                        phase = 'out';
+                        window.breathingTimeout = setTimeout(() => {
+                            text.textContent = 'Breathe Out...';
+                            phase = 'in';
+                            window.breathingTimeout = setTimeout(breathingCycle, 4000);
+                        }, 4000);
+                    }, 4000);
+                }
+            }
+            
+            breathingCycle();
+        }
+
+        function sendMessage(isMoodSelection = false) {
+            const input = document.getElementById("user-input");
+            let userInput = input.value;
+            
+            if (!isMoodSelection && !userInput.trim()) return;
+
+            const chatBox = document.getElementById("chat-box");
+            chatBox.innerHTML += `<p class="user" role="log"><strong>You:</strong> ${userInput}</p>`;
 
             fetch("/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: userInput })
+                body: JSON.stringify({ 
+                    message: userInput,
+                    mood: currentMood
+                })
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById("chat-box").innerHTML += `<p class="bot"><strong>Bot:</strong> ${data.response}</p>`;
-                document.getElementById("user-input").value = "";
-                document.getElementById("chat-box").scrollTop = document.getElementById("chat-box").scrollHeight;
+                chatBox.innerHTML += `<p class="bot" role="log"><strong>MG:</strong> ${data.response}</p>`;
+                if (!isMoodSelection) {
+                    input.value = "";
+                }
+                chatBox.scrollTop = chatBox.scrollHeight;
+                // Announce new message to screen readers
+                announceToScreenReader("New message received");
             });
         }
+
+        function handleEmergencySupport() {
+            const message = `
+                Emergency Support Available 24/7:
+                
+                Veterans Crisis Line: 988, Press 1
+                National Emergency: 911
+                Veterans Crisis Chat: Available online
+                
+                Would you like to:
+                1. Call Veterans Crisis Line
+                2. Open Crisis Chat
+                3. See More Resources
+            `;
+            
+            if (confirm(message)) {
+                window.open('https://www.veteranscrisisline.net/', '_blank');
+            }
+        }
+
+        function announceToScreenReader(message) {
+            const announce = document.createElement('div');
+            announce.setAttribute('role', 'alert');
+            announce.setAttribute('aria-live', 'polite');
+            announce.className = 'sr-only';
+            announce.textContent = message;
+            document.body.appendChild(announce);
+            setTimeout(() => announce.remove(), 1000);
+        }
+
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add aria-labels to all buttons
+            document.querySelectorAll('button').forEach(button => {
+                if (!button.getAttribute('aria-label')) {
+                    button.setAttribute('aria-label', button.textContent.trim());
+                }
+            });
+        });
     </script>
 </body>
 </html>
